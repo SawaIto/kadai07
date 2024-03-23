@@ -567,6 +567,21 @@
 
     // 1秒ごとに時間を更新
     setInterval(displayTime, 1000);
+
+    //スマートフォンでエンターキーを押したときにリロード禁止
+      // キーダウンイベントをキャッチしてエンターキーの処理を行う関数
+  function handleKeyDown(event) {
+    // キーがエンターキー（キーコード：13）かどうかを確認
+    if (event.keyCode === 13) {
+      // エンターキーのデフォルトの動作を停止
+      event.preventDefault();
+      // フォームの送信をキャンセル
+      return false;
+    }
+  }
+
+  // フォーム要素にkeydownイベントリスナーを追加
+  document.getElementById('workdaysForm').addEventListener('keydown', handleKeyDown);
     </script>
 </body>
 
