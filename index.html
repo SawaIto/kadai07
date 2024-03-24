@@ -2,485 +2,507 @@
 <html lang="ja">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>退職まであと何日出勤？</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-      body {
-        font-family: 'Helvetica Neue', Arial, sans-serif;
-      }
-    </style>
-  </head>
-  <body class="bg-pink-100">
-    <!-- ヘッダー要素をスクロール時に固定する -->
-    <header class="sticky top-0 z-10 relative">
-      <!-- 背景画像 -->
-      <img src="./img/flower.jpg" alt="" class="w-full h-auto">
-      <!-- 背景画像の上に重ねて表示する要素 -->
-      <div class="absolute inset-0 flex items-center justify-center bg-opacity-30">
-        <div class="bg-pink-500 sm:px-8 sm:py-4 px-3 py-2">
-          <h1 class="text-sm font-bold text-white sm:text-4xl">退職日まであと何日出社すればいい？</h1>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>退職まであと何日出勤？</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+    }
+  </style>
+</head>
+
+<body class="bg-pink-100">
+  <!-- ヘッダー要素をスクロール時に固定する -->
+  <header class="sticky top-0 z-10 relative">
+    <!-- 背景画像 -->
+    <img src="./img/flower.jpg" alt="" class="w-full h-auto">
+    <!-- 背景画像の上に重ねて表示する要素 -->
+    <div class="absolute inset-0 flex items-center justify-center bg-opacity-30">
+      <div class="bg-pink-500 sm:px-8 sm:py-4 px-3 py-2">
+        <h1 class="text-sm font-bold text-white sm:text-4xl">退職日まであと何日出社すればいい？</h1>
+      </div>
+    </div>
+  </header>
+  <main class="flex-1 flex md:flex-row">
+    <div class="grid grid-cols-1 lg:grid-cols-3 w-full sm:mx-4 mx-1 t-2">
+      <!-- データ入力画面 -->
+      <div class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
+        <button type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-4 rounded">退職情報入力</button>
+        <form id="workdaysForm" class="mt-2" onsubmit="return false;">
+          <label for="startDate" class="block text-gray-700 font-bold mb-1 mr-10">起算日:</label>
+          <input type="date" id="startDate" name="startDate" required class="text-center shadow appearance-none border rounded w-2/3 ml-5 py-1 px-3 text-gray-700
+                        leading-tight focus:outline-none focus:shadow-outline">
+          <br> <br>
+          <label for="endDate" class="block text-gray-700 font-bold mb-1">退職日:</label>
+          <input type="date" id="endDate" name="endDate" required class="bg-white text-center shadow appearance-none border rounded w-2/3 ml-5 py-1 px-3 text-gray-700 
+                    leading-tight focus:outline-none focus:shadow-outline">
+          <br><br>
+          <div class="flex flex-row items-center">
+            <label for="paidLeave" class="block text-gray-700 font-bold mb-2">有給休暇日数:</label>
+            <input type="number" id="paidLeave" name="paidLeave" min="0" value="0" class="text-center ml-5 shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 
+                        leading-tight focus:outline-none focus:shadow-outline">
+          </div>
+          <!-- 初期値を0に設定 -->
+          <br>
+          <button type="button" onclick="checkInputs()"
+            class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">計算する</button>
+          <p class="text-sm">*2041年1月以降は祝日が考慮されません。</p>
+        </form>
+      </div>
+      <!-- 結果表示画面 -->
+      <div id="result" class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
+        <button id="result" type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-4  rounded">結果</button>
+        <div id="result1" class="bg-white rounded-lg shadow-md p-2 mt-2">
+          <p class="font-bold">退職日まで</p>
+          <div class="flex">
+            <h3 class="block text-gray-700 font-bold my-3 ms:mx-5 mx-1">勤務日(除:土日祝):</h3>
+            <p id="workdays" class="block text-gray-700 font-bold my-3 ms:mr-2">あと何日？</p>
+          </div>
+          <div class="flex">
+            <h3 class="block text-gray-700 font-bold ms:mx-5 mx-1">出社日(除:有給休暇):</h3>
+            <p id="actualWorkdays" class="block text-gray-700 font-bold ms:mr-2">あと何日？</p>
+          </div>
+        </div>
+        <div class="max-w-md mx-auto mt-3">
+          <!-- 画像がここに表示される -->
+          <P class="flex justify-center block text-pink-700 sm:text-xl text-sm font-bold my-3 mr-2">大切なあなたへのメッセージ</P>
+          <div id="image-container" class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-lg">
+          </div>
+          <div class="flex justify-center mt-4">
+            <button id="prev-button" class="px-4 py-2 mr-2 text-white bg-pink-500 rounded hover:bg-pink-600">前</button>
+            <button id="next-button" class="px-4 py-2 text-white bg-pink-500 rounded hover:bg-pink-600">次</button>
+          </div>
         </div>
       </div>
-    </header>
-    <main class="flex-1 flex md:flex-row">
-        <div class="grid grid-cols-1 lg:grid-cols-3 w-full sm:mx-4 mx-1 t-2">
-            <!-- データ入力画面 -->
-            <div class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
-              <button type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-4 rounded">退職情報入力</button>
-              <form id="workdaysForm" class="mt-2" onsubmit="return false;">
-                    <label for="startDate" class="block text-gray-700 font-bold mb-1 mr-10">起算日:</label>
-                    <input type="date" id="startDate" name="startDate" required class="text-center shadow appearance-none border rounded w-2/3 ml-5 py-1 px-3 text-gray-700
-                        leading-tight focus:outline-none focus:shadow-outline">
-                    <br> <br>
-                    <label for="endDate" class="block text-gray-700 font-bold mb-1">退職日:</label>
-                    <input type="date" id="endDate" name="endDate" required class="text-center shadow appearance-none border rounded w-2/3 ml-5 py-1 px-3 text-gray-700 
-                    leading-tight focus:outline-none focus:shadow-outline">
-                    <br><br>
-                    <div class="flex flex-row items-center">
-                        <label for="paidLeave" class="block text-gray-700 font-bold mb-2">有給休暇日数:</label>
-                        <input type="number" id="paidLeave" name="paidLeave" min="0" value="0" class="text-center ml-5 shadow appearance-none border rounded w-32 py-2 px-3 text-gray-700 
-                        leading-tight focus:outline-none focus:shadow-outline">
-                    </div>
-                    <!-- 初期値を0に設定 -->
-                    <br>
-                    <button type="button" onclick="checkInputs()"
-                        class="bg-pink-500 hover:bg-pink-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">計算する</button>
-                    <p class="text-sm">*2041年1月以降は祝日が考慮されません。</p>
-                </form>
-            </div>
-            <!-- 結果表示画面 -->
-            <div id="result" class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
-                <button type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-4 rounded">結果</button>
-                <div class="flex">
-                    <h3 class="block text-gray-700 font-bold my-3 ms:mx-5 mx-1">勤務日(除:土日祝):</h3>
-                    <p id="workdays" class="block text-gray-700 font-bold my-3 ms:mr-2">あと何日？</p>
-                </div>
-                <div class="flex">
-                    <h3 class="block text-gray-700 font-bold ms:mx-5 mx-1">出社日(除:有給休暇):</h3>
-                    <p id="actualWorkdays" class="block text-gray-700 font-bold ms:mr-2">あと何日？</p>
-                </div>
-                <div class="max-w-md mx-auto mt-3">
-                     <!-- 画像がここに表示される -->
-                     <P class="flex justify-center block text-pink-700 sm:text-xl text-sm font-bold my-3 mr-2">大切なあなたへのメッセージ</P>
-                    <div id="image-container" class="w-48 h-48 mx-auto overflow-hidden rounded-lg shadow-lg">
-                    </div>
-                    <div class="flex justify-center mt-4">
-                      <button id="prev-button" class="px-4 py-2 mr-2 text-white bg-pink-500 rounded hover:bg-pink-600">前</button>
-                      <button id="next-button" class="px-4 py-2 text-white bg-pink-500 rounded hover:bg-pink-600">次</button>
-                    </div>
-                  </div>
-            </div>
-                   <!-- その他の項目
+      <!-- その他の項目
                     世界時計 -->
-            <div id="result" class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
-              <button type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-2 mb-2 rounded">世界時計</button>
-              <div class="bg-white rounded-lg shadow-md p-2">
-                <table class="w-full">
-                  <tr>
-                    <th class="text-l font-bold mb-1 ml-3 text-left">東京</th>
-                    <td class="ml-5 text-left">
-                      <p id="tokyo-time" class="text-m"></p>
-                      <p id="tokyo-day" class="text-sm"></p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-l font-bold mb-1 ml-3 text-left">シンガポール</th>
-                    <td class="ml-5 text-left">
-                      <p id="singapore-time" class="text-m"></p>
-                      <p id="singapore-day" class="text-sm"></p>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th class="text-l font-bold mb-1 ml-3 text-left">アメリカ</th>
-                    <td class="ml-5 text-left">
-                      <p id="america-time" class="text-m"></p>
-                      <p id="america-day" class="text-sm"></p>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-             </div>
-    </main>
+      <div class="lg:flex flex-col mx-2 mt-2 p-4 bg-gray-100 rounded-lg shadow-md">
+        <button type="button" class="w-full bg-pink-500 text-white font-bold py-2 px-2 mb-2 rounded">世界時計</button>
+        <div class="bg-white rounded-lg shadow-md p-2">
+          <table class="w-full">
+            <tr>
+              <th class="text-l font-bold mb-1 ml-3 text-left">東京</th>
+              <td class="ml-5 text-left">
+                <p id="tokyo-time" class="text-m"></p>
+                <p id="tokyo-day" class="text-sm"></p>
+              </td>
+            </tr>
+            <tr>
+              <th class="text-l font-bold mb-1 ml-3 text-left">シンガポール</th>
+              <td class="ml-5 text-left">
+                <p id="singapore-time" class="text-m"></p>
+                <p id="singapore-day" class="text-sm"></p>
+              </td>
+            </tr>
+            <tr>
+              <th class="text-l font-bold mb-1 ml-3 text-left">アメリカ</th>
+              <td class="ml-5 text-left">
+                <p id="america-time" class="text-m"></p>
+                <p id="america-day" class="text-sm"></p>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+  </main>
 
 
-    <script>
-        const holidays = [
-            '2024-01-1',
-            '2024-01-8',
-            '2024-02-11',
-            '2024-02-12',
-            '2024-02-23',
-            '2024-03-20',
-            '2024-04-29',
-            '2024-05-3',
-            '2024-05-4',
-            '2024-05-5',
-            '2024-05-6',
-            '2024-07-15',
-            '2024-08-11',
-            '2024-08-12',
-            '2024-09-16',
-            '2024-09-22',
-            '2024-09-23',
-            '2024-10-14',
-            '2024-11-3',
-            '2024-11-4',
-            '2024-11-23',
-            '2025-01-1',
-            '2025-01-13',
-            '2025-02-11',
-            '2025-02-23',
-            '2025-02-24',
-            '2025-03-20',
-            '2025-04-29',
-            '2025-05-3',
-            '2025-05-4',
-            '2025-05-5',
-            '2025-05-6',
-            '2025-07-21',
-            '2025-08-11',
-            '2025-09-15',
-            '2025-09-23',
-            '2025-10-13',
-            '2025-11-3',
-            '2025-11-23',
-            '2025-11-24',
-            '2026-01-1',
-            '2026-01-12',
-            '2026-02-11',
-            '2026-02-23',
-            '2026-03-20',
-            '2026-04-29',
-            '2026-05-3',
-            '2026-05-4',
-            '2026-05-5',
-            '2026-05-6',
-            '2026-07-20',
-            '2026-08-11',
-            '2026-09-21',
-            '2026-09-22',
-            '2026-09-23',
-            '2026-10-12',
-            '2026-11-3',
-            '2026-11-23',
-            '2027-01-1',
-            '2027-01-11',
-            '2027-02-11',
-            '2027-02-23',
-            '2027-03-21',
-            '2027-03-22',
-            '2027-04-29',
-            '2027-05-3',
-            '2027-05-4',
-            '2027-05-5',
-            '2027-07-19',
-            '2027-08-11',
-            '2027-09-20',
-            '2027-09-23',
-            '2027-10-11',
-            '2027-11-3',
-            '2027-11-23',
-            '2028-01-1',
-            '2028-01-10',
-            '2028-02-11',
-            '2028-02-23',
-            '2028-03-20',
-            '2028-04-29',
-            '2028-05-3',
-            '2028-05-4',
-            '2028-05-5',
-            '2028-07-17',
-            '2028-08-11',
-            '2028-09-18',
-            '2028-09-22',
-            '2028-10-9',
-            '2028-11-3',
-            '2028-11-23',
-            '2029-01-1',
-            '2029-01-8',
-            '2029-02-11',
-            '2029-02-12',
-            '2029-02-23',
-            '2029-03-20',
-            '2029-04-29',
-            '2029-04-30',
-            '2029-05-3',
-            '2029-05-4',
-            '2029-05-5',
-            '2029-07-16',
-            '2029-08-11',
-            '2029-09-17',
-            '2029-09-23',
-            '2029-09-24',
-            '2029-10-8',
-            '2029-11-3',
-            '2029-11-23',
-            '2030-01-1',
-            '2030-01-14',
-            '2030-02-11',
-            '2030-02-23',
-            '2030-03-20',
-            '2030-04-29',
-            '2030-05-3',
-            '2030-05-4',
-            '2030-05-5',
-            '2030-05-6',
-            '2030-07-15',
-            '2030-08-11',
-            '2030-08-12',
-            '2030-09-16',
-            '2030-09-23',
-            '2030-10-14',
-            '2030-11-3',
-            '2030-11-4',
-            '2030-11-23',
-            '2031-01-1',
-            '2031-01-13',
-            '2031-02-11',
-            '2031-02-23',
-            '2031-02-24',
-            '2031-03-21',
-            '2031-04-29',
-            '2031-05-3',
-            '2031-05-4',
-            '2031-05-5',
-            '2031-05-6',
-            '2031-07-21',
-            '2031-08-11',
-            '2031-09-15',
-            '2031-09-23',
-            '2031-10-13',
-            '2031-11-3',
-            '2031-11-23',
-            '2031-11-24',
-            '2032-01-1',
-            '2032-01-12',
-            '2032-02-11',
-            '2032-02-23',
-            '2032-03-20',
-            '2032-04-29',
-            '2032-05-3',
-            '2032-05-4',
-            '2032-05-5',
-            '2032-07-19',
-            '2032-08-11',
-            '2032-09-20',
-            '2032-09-21',
-            '2032-09-22',
-            '2032-10-11',
-            '2032-11-3',
-            '2032-11-23',
-            '2033-01-1',
-            '2033-01-10',
-            '2033-02-11',
-            '2033-02-23',
-            '2033-03-20',
-            '2033-03-21',
-            '2033-04-29',
-            '2033-05-3',
-            '2033-05-4',
-            '2033-05-5',
-            '2033-07-18',
-            '2033-08-11',
-            '2033-09-19',
-            '2033-09-23',
-            '2033-10-10',
-            '2033-11-3',
-            '2033-11-23',
-            '2034-01-1',
-            '2034-01-2',
-            '2034-01-9',
-            '2034-02-11',
-            '2034-02-23',
-            '2034-03-20',
-            '2034-04-29',
-            '2034-05-3',
-            '2034-05-4',
-            '2034-05-5',
-            '2034-07-17',
-            '2034-08-11',
-            '2034-09-18',
-            '2034-09-23',
-            '2034-10-9',
-            '2034-11-3',
-            '2034-11-23',
-            '2035-01-1',
-            '2035-01-8',
-            '2035-02-11',
-            '2035-02-12',
-            '2035-02-23',
-            '2035-03-21',
-            '2035-04-29',
-            '2035-04-30',
-            '2035-05-3',
-            '2035-05-4',
-            '2035-05-5',
-            '2035-07-16',
-            '2035-08-11',
-            '2035-09-17',
-            '2035-09-23',
-            '2035-09-24',
-            '2035-10-8',
-            '2035-11-3',
-            '2035-11-23',
-            '2036-01-1',
-            '2036-01-14',
-            '2036-02-11',
-            '2036-02-23',
-            '2036-03-20',
-            '2036-04-29',
-            '2036-05-3',
-            '2036-05-4',
-            '2036-05-5',
-            '2036-05-6',
-            '2036-07-21',
-            '2036-08-11',
-            '2036-09-15',
-            '2036-09-22',
-            '2036-10-13',
-            '2036-11-3',
-            '2036-11-23',
-            '2036-11-24',
-            '2037-01-1',
-            '2037-01-12',
-            '2037-02-11',
-            '2037-02-23',
-            '2037-03-20',
-            '2037-04-29',
-            '2037-05-3',
-            '2037-05-4',
-            '2037-05-5',
-            '2037-05-6',
-            '2037-07-20',
-            '2037-08-11',
-            '2037-09-21',
-            '2037-09-22',
-            '2037-09-23',
-            '2037-10-12',
-            '2037-11-3',
-            '2037-11-23',
-            '2038-01-1',
-            '2038-01-11',
-            '2038-02-11',
-            '2038-02-23',
-            '2038-03-20',
-            '2038-04-29',
-            '2038-05-3',
-            '2038-05-4',
-            '2038-05-5',
-            '2038-07-19',
-            '2038-08-11',
-            '2038-09-20',
-            '2038-09-23',
-            '2038-10-11',
-            '2038-11-3',
-            '2038-11-23',
-            '2039-01-1',
-            '2039-01-10',
-            '2039-02-11',
-            '2039-02-23',
-            '2039-03-21',
-            '2039-04-29',
-            '2039-05-3',
-            '2039-05-4',
-            '2039-05-5',
-            '2039-07-18',
-            '2039-08-11',
-            '2039-09-19',
-            '2039-09-23',
-            '2039-10-10',
-            '2039-11-3',
-            '2039-11-23',
-            '2040-01-1',
-            '2040-01-2',
-            '2040-01-9',
-            '2040-02-11',
-            '2040-02-23',
-            '2040-03-20',
-            '2040-04-29',
-            '2040-04-30',
-            '2040-05-3',
-            '2040-05-4',
-            '2040-05-5',
-            '2040-07-16',
-            '2040-08-11',
-            '2040-09-17',
-            '2040-09-22',
-            '2040-10-8',
-            '2040-11-3',
-            '2040-11-23',
-        ];
+  <script>
+    const holidays = [
+      '2024-01-1',
+      '2024-01-8',
+      '2024-02-11',
+      '2024-02-12',
+      '2024-02-23',
+      '2024-03-20',
+      '2024-04-29',
+      '2024-05-3',
+      '2024-05-4',
+      '2024-05-5',
+      '2024-05-6',
+      '2024-07-15',
+      '2024-08-11',
+      '2024-08-12',
+      '2024-09-16',
+      '2024-09-22',
+      '2024-09-23',
+      '2024-10-14',
+      '2024-11-3',
+      '2024-11-4',
+      '2024-11-23',
+      '2025-01-1',
+      '2025-01-13',
+      '2025-02-11',
+      '2025-02-23',
+      '2025-02-24',
+      '2025-03-20',
+      '2025-04-29',
+      '2025-05-3',
+      '2025-05-4',
+      '2025-05-5',
+      '2025-05-6',
+      '2025-07-21',
+      '2025-08-11',
+      '2025-09-15',
+      '2025-09-23',
+      '2025-10-13',
+      '2025-11-3',
+      '2025-11-23',
+      '2025-11-24',
+      '2026-01-1',
+      '2026-01-12',
+      '2026-02-11',
+      '2026-02-23',
+      '2026-03-20',
+      '2026-04-29',
+      '2026-05-3',
+      '2026-05-4',
+      '2026-05-5',
+      '2026-05-6',
+      '2026-07-20',
+      '2026-08-11',
+      '2026-09-21',
+      '2026-09-22',
+      '2026-09-23',
+      '2026-10-12',
+      '2026-11-3',
+      '2026-11-23',
+      '2027-01-1',
+      '2027-01-11',
+      '2027-02-11',
+      '2027-02-23',
+      '2027-03-21',
+      '2027-03-22',
+      '2027-04-29',
+      '2027-05-3',
+      '2027-05-4',
+      '2027-05-5',
+      '2027-07-19',
+      '2027-08-11',
+      '2027-09-20',
+      '2027-09-23',
+      '2027-10-11',
+      '2027-11-3',
+      '2027-11-23',
+      '2028-01-1',
+      '2028-01-10',
+      '2028-02-11',
+      '2028-02-23',
+      '2028-03-20',
+      '2028-04-29',
+      '2028-05-3',
+      '2028-05-4',
+      '2028-05-5',
+      '2028-07-17',
+      '2028-08-11',
+      '2028-09-18',
+      '2028-09-22',
+      '2028-10-9',
+      '2028-11-3',
+      '2028-11-23',
+      '2029-01-1',
+      '2029-01-8',
+      '2029-02-11',
+      '2029-02-12',
+      '2029-02-23',
+      '2029-03-20',
+      '2029-04-29',
+      '2029-04-30',
+      '2029-05-3',
+      '2029-05-4',
+      '2029-05-5',
+      '2029-07-16',
+      '2029-08-11',
+      '2029-09-17',
+      '2029-09-23',
+      '2029-09-24',
+      '2029-10-8',
+      '2029-11-3',
+      '2029-11-23',
+      '2030-01-1',
+      '2030-01-14',
+      '2030-02-11',
+      '2030-02-23',
+      '2030-03-20',
+      '2030-04-29',
+      '2030-05-3',
+      '2030-05-4',
+      '2030-05-5',
+      '2030-05-6',
+      '2030-07-15',
+      '2030-08-11',
+      '2030-08-12',
+      '2030-09-16',
+      '2030-09-23',
+      '2030-10-14',
+      '2030-11-3',
+      '2030-11-4',
+      '2030-11-23',
+      '2031-01-1',
+      '2031-01-13',
+      '2031-02-11',
+      '2031-02-23',
+      '2031-02-24',
+      '2031-03-21',
+      '2031-04-29',
+      '2031-05-3',
+      '2031-05-4',
+      '2031-05-5',
+      '2031-05-6',
+      '2031-07-21',
+      '2031-08-11',
+      '2031-09-15',
+      '2031-09-23',
+      '2031-10-13',
+      '2031-11-3',
+      '2031-11-23',
+      '2031-11-24',
+      '2032-01-1',
+      '2032-01-12',
+      '2032-02-11',
+      '2032-02-23',
+      '2032-03-20',
+      '2032-04-29',
+      '2032-05-3',
+      '2032-05-4',
+      '2032-05-5',
+      '2032-07-19',
+      '2032-08-11',
+      '2032-09-20',
+      '2032-09-21',
+      '2032-09-22',
+      '2032-10-11',
+      '2032-11-3',
+      '2032-11-23',
+      '2033-01-1',
+      '2033-01-10',
+      '2033-02-11',
+      '2033-02-23',
+      '2033-03-20',
+      '2033-03-21',
+      '2033-04-29',
+      '2033-05-3',
+      '2033-05-4',
+      '2033-05-5',
+      '2033-07-18',
+      '2033-08-11',
+      '2033-09-19',
+      '2033-09-23',
+      '2033-10-10',
+      '2033-11-3',
+      '2033-11-23',
+      '2034-01-1',
+      '2034-01-2',
+      '2034-01-9',
+      '2034-02-11',
+      '2034-02-23',
+      '2034-03-20',
+      '2034-04-29',
+      '2034-05-3',
+      '2034-05-4',
+      '2034-05-5',
+      '2034-07-17',
+      '2034-08-11',
+      '2034-09-18',
+      '2034-09-23',
+      '2034-10-9',
+      '2034-11-3',
+      '2034-11-23',
+      '2035-01-1',
+      '2035-01-8',
+      '2035-02-11',
+      '2035-02-12',
+      '2035-02-23',
+      '2035-03-21',
+      '2035-04-29',
+      '2035-04-30',
+      '2035-05-3',
+      '2035-05-4',
+      '2035-05-5',
+      '2035-07-16',
+      '2035-08-11',
+      '2035-09-17',
+      '2035-09-23',
+      '2035-09-24',
+      '2035-10-8',
+      '2035-11-3',
+      '2035-11-23',
+      '2036-01-1',
+      '2036-01-14',
+      '2036-02-11',
+      '2036-02-23',
+      '2036-03-20',
+      '2036-04-29',
+      '2036-05-3',
+      '2036-05-4',
+      '2036-05-5',
+      '2036-05-6',
+      '2036-07-21',
+      '2036-08-11',
+      '2036-09-15',
+      '2036-09-22',
+      '2036-10-13',
+      '2036-11-3',
+      '2036-11-23',
+      '2036-11-24',
+      '2037-01-1',
+      '2037-01-12',
+      '2037-02-11',
+      '2037-02-23',
+      '2037-03-20',
+      '2037-04-29',
+      '2037-05-3',
+      '2037-05-4',
+      '2037-05-5',
+      '2037-05-6',
+      '2037-07-20',
+      '2037-08-11',
+      '2037-09-21',
+      '2037-09-22',
+      '2037-09-23',
+      '2037-10-12',
+      '2037-11-3',
+      '2037-11-23',
+      '2038-01-1',
+      '2038-01-11',
+      '2038-02-11',
+      '2038-02-23',
+      '2038-03-20',
+      '2038-04-29',
+      '2038-05-3',
+      '2038-05-4',
+      '2038-05-5',
+      '2038-07-19',
+      '2038-08-11',
+      '2038-09-20',
+      '2038-09-23',
+      '2038-10-11',
+      '2038-11-3',
+      '2038-11-23',
+      '2039-01-1',
+      '2039-01-10',
+      '2039-02-11',
+      '2039-02-23',
+      '2039-03-21',
+      '2039-04-29',
+      '2039-05-3',
+      '2039-05-4',
+      '2039-05-5',
+      '2039-07-18',
+      '2039-08-11',
+      '2039-09-19',
+      '2039-09-23',
+      '2039-10-10',
+      '2039-11-3',
+      '2039-11-23',
+      '2040-01-1',
+      '2040-01-2',
+      '2040-01-9',
+      '2040-02-11',
+      '2040-02-23',
+      '2040-03-20',
+      '2040-04-29',
+      '2040-04-30',
+      '2040-05-3',
+      '2040-05-4',
+      '2040-05-5',
+      '2040-07-16',
+      '2040-08-11',
+      '2040-09-17',
+      '2040-09-22',
+      '2040-10-8',
+      '2040-11-3',
+      '2040-11-23',
+    ];
 
-        // 祝日かどうかをチェックする関数
-        function isHoliday(dateString) {
-            const date = new Date(dateString);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1; // 月は0-indexedなので+1する
-            const day = date.getDate();
+    // 祝日かどうかをチェックする関数
+    function isHoliday(dateString) {
+      const date = new Date(dateString);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // 月は0-indexedなので+1する
+      const day = date.getDate();
 
-            // 土曜日か日曜日の場合は祝日ではない
-            if (date.getDay() === 0 || date.getDay() === 6) {
-                return false;
-            }
+      // 土曜日か日曜日の場合は祝日ではない
+      if (date.getDay() === 0 || date.getDay() === 6) {
+        return false;
+      }
 
-            // 祝日リストに含まれている場合は祝日
-            if (holidays.includes(`${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`)) {
-                return true;
-            }
+      // 祝日リストに含まれている場合は祝日
+      if (holidays.includes(`${year}-${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}`)) {
+        return true;
+      }
 
-            return false;
+      return false;
+    }
+
+    // 労働日数をカウントする関数
+    function countWorkdays(startDate, endDate) {
+      const start = new Date(startDate);
+      const end = new Date(endDate);
+
+      let workdays = 0;
+      let currentDate = new Date(start);
+
+      while (currentDate <= end) {
+        // 土日祝を除外
+        if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6 && !isHoliday(currentDate)) {
+          workdays++;
         }
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
 
-        // 労働日数をカウントする関数
-        function countWorkdays(startDate, endDate) {
-            const start = new Date(startDate);
-            const end = new Date(endDate);
-
-            let workdays = 0;
-            let currentDate = new Date(start);
-
-            while (currentDate <= end) {
-                // 土日祝を除外
-                if (currentDate.getDay() !== 0 && currentDate.getDay() !== 6 && !isHoliday(currentDate)) {
-                    workdays++;
-                }
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-
-            return workdays;
-        }
+      return workdays;
+    }
 
 
-        function calculateWorkdays() {
-            const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value;
-            const paidLeave = parseInt(document.getElementById("paidLeave").value);
+    function calculateWorkdays() {
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+      const paidLeave = parseInt(document.getElementById("paidLeave").value);
 
-            const workdays = countWorkdays(startDate, endDate);
-            const actualWorkdays = workdays - paidLeave;
+      const workdays = countWorkdays(startDate, endDate);
+      const actualWorkdays = workdays - paidLeave;
+
+      // 画面幅が640px以下の場合のみ処理を実行
+      if (window.innerWidth <= 640) {
+
+        // 結果表示画面の位置から下に10pxスクロール
+        window.scrollBy(0, 350);
+      }
+
+      // 結果を表示する要素を取得
+      var resultElement = document.getElementById("result1");
+      // 背景色を変更するためのTailwind CSSクラスを追加
+      resultElement.classList.add("bg-pink-200"); // ピンク色のクラスを追加
 
 
-            document.getElementById("workdays").textContent = ` ${workdays}日`;
-            document.getElementById("actualWorkdays").textContent = `${actualWorkdays}日`;
-        }
 
-        function checkInputs() {
-            const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value;
+      document.getElementById("workdays").textContent = ` ${workdays}日`;
+      document.getElementById("actualWorkdays").textContent = `${actualWorkdays}日`;
+    }
 
-            // 起算日と退職日が選択されているかをチェック
-            if (startDate === "" || endDate === "") {
-                alert("起算日と退職日を選択してください。");
-            } else {
-                // 起算日と退職日が選択されている場合は計算を実行
-                calculateWorkdays();
-            }
-        }
+    function checkInputs() {
+      const startDate = document.getElementById("startDate").value;
+      const endDate = document.getElementById("endDate").value;
+      const today = new Date().toISOString().slice(0, 10); // 今日の日付を取得
 
-        const images = [
+      if (startDate === "" || endDate === "") {
+        alert("起算日と退職日を選択してください。");
+      } else if (startDate < today || endDate < today) {
+        alert("起算日、対象日は過去の日付は設定できません。");
+      } else {
+        // 起算日と退職日が選択されており、今日以降の場合は計算を実行
+        calculateWorkdays();
+      }
+
+    }
+
+
+
+    const images = [
       'img/slideshow/1.png',
       'img/slideshow/2.png',
       'img/slideshow/3.png',
@@ -493,7 +515,7 @@
       'img/slideshow/10.png',
       // 他の画像ファイルのパスを追加
     ];
-    
+
     //写真をスライドショーで表示
     const imageContainer = document.getElementById('image-container');
     let currentIndex = 0;
@@ -525,9 +547,9 @@
     prevButton.addEventListener('click', prevImage);
     nextButton.addEventListener('click', nextImage);
 
-  //世界時計表示
-   // 曜日を取得する関数
-   function getDayOfWeek(date) {
+    //世界時計表示
+    // 曜日を取得する関数
+    function getDayOfWeek(date) {
       const days = ['日曜日', '月曜日', '火曜日', '水曜日', '木曜日', '金曜日', '土曜日'];
       return days[date.getDay()];
     }
@@ -569,20 +591,20 @@
     setInterval(displayTime, 1000);
 
     //スマートフォンでエンターキーを押したときにリロード禁止
-      // キーダウンイベントをキャッチしてエンターキーの処理を行う関数
-  function handleKeyDown(event) {
-    // キーがエンターキー（キーコード：13）かどうかを確認
-    if (event.keyCode === 13) {
-      // エンターキーのデフォルトの動作を停止
-      event.preventDefault();
-      // フォームの送信をキャンセル
-      return false;
+    // キーダウンイベントをキャッチしてエンターキーの処理を行う関数
+    function handleKeyDown(event) {
+      // キーがエンターキー（キーコード：13）かどうかを確認
+      if (event.keyCode === 13) {
+        // エンターキーのデフォルトの動作を停止
+        event.preventDefault();
+        // フォームの送信をキャンセル
+        return false;
+      }
     }
-  }
 
-  // フォーム要素にkeydownイベントリスナーを追加
-  document.getElementById('workdaysForm').addEventListener('keydown', handleKeyDown);
-    </script>
+    // フォーム要素にkeydownイベントリスナーを追加
+    document.getElementById('workdaysForm').addEventListener('keydown', handleKeyDown);
+  </script>
 </body>
 
 </html>
